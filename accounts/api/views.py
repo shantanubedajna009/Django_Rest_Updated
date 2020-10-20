@@ -7,10 +7,13 @@ from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
 from .serializers import AccountsSerializer
+from .permissions import IsUserAuthenticated
 
 
 
-# directly getting from api defaults bypassig the settings.py imports
+# proper way of getting the data from the jwt configs, 
+# (out overwritten payload handler is referenced here)
+# cause we overriten it in the settings file
 
 jwt_payload_handler             = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler              = api_settings.JWT_ENCODE_HANDLER
@@ -55,9 +58,18 @@ class CustomAuthAPIView(APIView):
 
 
 class RegisterAPIView(CreateAPIView):
-    permission_classes = [permissions.AllowAny]
+    #permission_classes = [permissions.AllowAny]
+    
+    permission_classes = [IsUserAuthenticated]
     serializer_class = AccountsSerializer
     queryset = User.objects.all() # queryset ta lagie lage, kon model chenar jonno
+
+
+    def get_serializer_context(self, *args, **kwargs):
+        context = super(RegisterAPIView, self).get_serializer_context(*args, **kwargs)
+        context['request'] = self.request
+
+        return context
 
 
 
