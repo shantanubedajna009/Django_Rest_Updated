@@ -15,3 +15,4 @@ urlpatterns = [
     url(r'^jwt/refresh/$', refresh_jwt_token, name='auth_token_refresh'),
 
 ]
+

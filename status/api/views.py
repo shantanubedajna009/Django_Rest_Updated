@@ -25,6 +25,8 @@ from rest_framework.mixins import (
 from status.utils import is_json
 import json
 
+from accounts.api.permissions import IsOwnerOrReadOnly
+
 
 
 
@@ -75,7 +77,8 @@ class StatusListAPIView(CreateModelMixin, ListAPIView):
 
 
 class StatusDetailAPIView(UpdateModelMixin, DestroyModelMixin, RetrieveAPIView):
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    permission_classes = [IsOwnerOrReadOnly]
     # authentication_classes = []
     
     serializer_class = StatusSerializer

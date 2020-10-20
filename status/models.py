@@ -14,7 +14,6 @@ class StatusModelManager(models.Manager):
         return StatusCustomQueryset(self.model, using=self._db)
 
 
-
 def upload_image_path_function(instance, filename):
     return "status/{user}/{filename}".format(user=instance.user, filename=filename)
 
@@ -39,4 +38,9 @@ class StatusModel(models.Model):
             return self.content[:50]
         else:
             return ""
+
+    # owner property to access from the Custom Permission
+    @property
+    def owner(self):
+        return self.user
 

@@ -48,7 +48,7 @@ class AccountsSerializer(serializers.ModelSerializer):
     def get_is_authenticated(self, obj):
         context = self.context
         request = context['request']
-        
+
         return  request.user.is_authenticated
 
     def get_token(self, obj):
@@ -97,11 +97,14 @@ class AccountsSerializer(serializers.ModelSerializer):
     # assigns the values as it is, we are not 
     # we are handling the user creating and password set
     
-    def create(self, validated_data):  
+    def create(self, validated_data):
         #print(validated_data)
         user_obj = User(
                 username=validated_data.get('username'), 
                 email=validated_data.get('email'))
         user_obj.set_password(validated_data.get('password'))
+        
+        # by default the user is not activated
+        user_obj.is_active = False
         user_obj.save()
         return user_obj
