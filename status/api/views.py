@@ -27,6 +27,8 @@ import json
 
 from accounts.api.permissions import IsOwnerOrReadOnly
 
+from accounts.models import Book
+
 
 
 
@@ -48,7 +50,9 @@ class StatusListAPIView(CreateModelMixin, ListAPIView):
     def get_queryset(self, *args, **kwargs):
         request = self.request
 
-        print('\n\n\n\n', request.user, '\n\n\n\n')
+        lala = Book.objects.get_books_2004()
+
+        print(lala)
 
         q = request.GET.get('q', None)
 

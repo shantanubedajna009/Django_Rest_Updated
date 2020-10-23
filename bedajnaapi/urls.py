@@ -27,8 +27,8 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/updates/json_func/')),
     url(r'^api/status/', include('status.api.urls')),
     url('^api/auth/', include('accounts.api.urls')),
-
     url(r'^updates/', include('updates.urls')),
+    url(r'^api/user/', include('accounts.api.user.urls')),
 
 ]
 
