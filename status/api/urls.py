@@ -8,7 +8,7 @@ from .views import (
     # StatusDeleteAPIView,
     )
 
-app_name = 'status_api'
+app_name = 'status-api'
 
 urlpatterns = [
     url(r'^$', StatusListAPIView.as_view(), name='list'),

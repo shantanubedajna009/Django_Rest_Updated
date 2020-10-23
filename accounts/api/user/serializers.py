@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse, reverse_lazy
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework_jwt.settings import api_settings
@@ -25,7 +26,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_uri(self, obj):
-        return "/api/user/{id}/".format(id=obj.username)
+        return reverse("api-user:detail", kwargs={'username': obj.username}, request=self.context['request'])
 
     def get_recent_status(self, obj):
 
@@ -41,11 +42,13 @@ class UserDetailSerializer(serializers.ModelSerializer):
         
         qs = obj.statusmodel_set.order_by('-timestamp')[:limit]
 
-        serialized_data = UserStatusSerializer(qs, many=True).data
+        serialized_data = UserStatusSerializer(qs, context={'request': request}, many=True).data
 
         data = {
-            'status_endpoint': 'status/',
+            'status_endpoint': reverse("api-user:status-list", kwargs={'username': obj.username}, request=self.context['request']),
             'list': serialized_data,
         }
 
         return data
+
+

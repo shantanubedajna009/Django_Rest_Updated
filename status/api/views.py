@@ -38,46 +38,55 @@ class StatusListAPIView(CreateModelMixin, ListAPIView):
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # authentication_classes = [SessionAuthentication]
     
-    serializer_class = StatusSerializer
-    queryset = StatusModel.objects.all()
-
+    serializer_class    = StatusSerializer
+    queryset            = StatusModel.objects.all()
+    search_fields       = ['user__username', 'content', 'user__email']
+    ordering_fields     = ['user_username', 'timestamp']
     
     # works as a Createview with the help of the Mixin
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
     
 
-    def get_queryset(self, *args, **kwargs):
-        request = self.request
+    # def get_queryset(self, *args, **kwargs):
+    #     request = self.request
 
-        lala = Book.objects.get_books_2004()
+    #     lala = Book.objects.get_books_2004()
 
-        print(lala)
+    #     print(lala)
 
-        q = request.GET.get('q', None)
+    #     q = request.GET.get('q', None)
 
-        if q:
-            # qs = (  
-            #         Q(content__icontains=q) |
-            #         Q(user__username__icontains=q)
-            #      )
+    #     if q:
+    #         # qs = (  
+    #         #         Q(content__icontains=q) |
+    #         #         Q(user__username__icontains=q)
+    #         #      )
             
-            qs = StatusModel.objects.filter(  
-                    Q(content__icontains=q) |
-                    Q(user__username__icontains=q)
-                 )
+    #         qs = StatusModel.objects.filter(  
+    #                 Q(content__icontains=q) |
+    #                 Q(user__username__icontains=q)
+    #              )
 
-            if qs.exists():
-                return qs
+    #         if qs.exists():
+    #             return qs
 
-        return super(StatusListAPIView, self).get_queryset(*args, **kwargs)
-        # same as return StatusModel.objects.all()
+    #     return super(StatusListAPIView, self).get_queryset(*args, **kwargs)
+    #     # same as return StatusModel.objects.all()
 
     def perform_create(self, serializer):
         user = self.request.user
         if user.is_authenticated:
             serializer.save(user=user)
 
+
+
+
+    def get_serializer_context(self, *args, **kwargs):
+        context = super(StatusListAPIView, self).get_serializer_context(*args, **kwargs)
+        context['request'] = self.request
+
+        return context
 
 
 class StatusDetailAPIView(UpdateModelMixin, DestroyModelMixin, RetrieveAPIView):

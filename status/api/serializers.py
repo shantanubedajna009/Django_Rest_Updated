@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from status.models import StatusModel
 from accounts.api.serializers import UserPublicSerializer
 
@@ -16,7 +17,8 @@ class UserStatusSerializer(serializers.ModelSerializer):
         ] 
 
     def get_uri(self, obj):
-        return "/api/status/{id}/".format(id=obj.id)
+        #print('\n\n\n\n', self.context, '\n\n\n\n')
+        return reverse('status-api:detail', kwargs={'id': obj.id}, request=self.context['request'])
 
 
 
@@ -39,7 +41,7 @@ class StatusSerializer(serializers.ModelSerializer):
     
 
     def get_uri(self, obj):
-        return "/api/status/{id}/".format(id=obj.id)
+        return reverse('status-api:detail', kwargs={'id': obj.id}, request=self.context['request'])
 
 
     def validate_content(self, value):
