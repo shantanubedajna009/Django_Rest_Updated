@@ -24,6 +24,18 @@ class UserStatusSerializer(serializers.ModelSerializer):
 
 class StatusSerializer(serializers.ModelSerializer):
     user            = UserPublicSerializer(read_only=True)
+    #user            = serializers.PrimaryKeyRelatedField(read_only=True)
+    # user            = serializers.HyperlinkedRelatedField(
+    #                                                     lookup_field='username', # kwargs for the reverse()
+    #                                                     view_name='api-user:detail', # url namnespace path for the reverse()
+    #                                                     read_only=True,
+    #                                                     )
+
+    # user            = serializers.SlugRelatedField( # user this when we want to display any other field 
+    #                                                 # other than the slug field
+    #                                                 slug_field='email', read_only=True
+    #                                             )
+
     uri             = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -38,7 +50,6 @@ class StatusSerializer(serializers.ModelSerializer):
 
         read_only_fields = ['user']
 
-    
 
     def get_uri(self, obj):
         return reverse('status-api:detail', kwargs={'id': obj.id}, request=self.context['request'])

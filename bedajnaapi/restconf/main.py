@@ -19,6 +19,16 @@ REST_FRAMEWORK = {
     'ORDERING_PARAM': 'ordering',
 
     'DEFAULT_PAGINATION_CLASS': 'bedajnaapi.restconf.pagination.CustomPagination',
+
+
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '3/day',
+        'user': '1000/day'
+    }
 }
 
 

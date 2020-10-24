@@ -8,13 +8,33 @@ from django.utils import timezone
 
 from status.api.serializers import UserStatusSerializer
 
-
 User = get_user_model()
 
 
+class CustomHyperlinkMethoedField(serializers.HyperlinkedRelatedField):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomHyperlinkMethoedField, self).__init__(*args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(CustomHyperlinkMethoedField, self).get_queryset(*args, **kwargs)
+
+        return qs[:3]
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
-    uri             = serializers.SerializerMethodField(read_only=True)
-    recent_status     = serializers.SerializerMethodField(read_only=True)
+    uri                 = serializers.SerializerMethodField(read_only=True)
+    recent_status       = serializers.SerializerMethodField(read_only=True)
+    statuses            = CustomHyperlinkMethoedField(source='statusmodel_set', # basically specifying
+                                                                                   # the reverse queryset
+                                                                                   # since this is the user obj
+                                                                                   # so user_obj.statusmodel_set 
+                                                            view_name='status-api:detail',
+                                                            lookup_field='id',
+                                                            many=True,
+                                                            read_only=True,
+
+                                                            )
 
     class Meta:
         model = User
@@ -22,7 +42,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'id',
             'username',
             'uri',
-            'recent_status'
+            'recent_status',
+            'statuses',
         ]
 
     def get_uri(self, obj):
