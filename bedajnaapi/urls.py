@@ -20,14 +20,15 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+from rest_framework.reverse import reverse_lazy
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^$', RedirectView.as_view(url='/updates/json_func/')),
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('status-api:list'))),
     url(r'^api/status/', include('status.api.urls')),
     url('^api/auth/', include('accounts.api.urls')),
-    url(r'^updates/', include('updates.urls')),
     url(r'^api/user/', include('accounts.api.user.urls')),
 
 ]
